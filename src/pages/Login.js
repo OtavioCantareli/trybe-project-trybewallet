@@ -28,18 +28,20 @@ class Login extends React.Component {
     const regex = /^\w+([.-]?\w+)+@\w+([.:]?\w+)+(\.[a-zA-Z0-9]{3})+$/;
     const passLength = 5;
     return (
-      <div>
+      <form>
         <input
           type="email"
           data-testid="email-input"
           placeholder="Email"
           onChange={ handleEmailChange }
+          value={ emailInput }
         />
         <input
           type="password"
           data-testid="password-input"
           placeholder="Password"
           onChange={ handlePassChange }
+          value={ passInput }
         />
         {regex.test(emailInput) && passInput.length > passLength ? (
           <button type="button">Entrar</button>
@@ -48,7 +50,7 @@ class Login extends React.Component {
             Entrar
           </button>
         )}
-      </div>
+      </form>
     );
   }
 }
