@@ -1,58 +1,84 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import saveUser from '../actions/index';
 
 class Login extends React.Component {
   constructor() {
     super();
     this.state = {
-      emailInput: '',
-      passInput: '',
+      email: '',
+      pass: '',
+      isDisabled: true,
     };
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-    this.handlePassChange = this.handlePassChange.bind(this);
   }
 
-  handleEmailChange = ({ target: { value } }) => {
-    this.setState({ emailInput: value });
+  handleChange = ({ target }) => {
+    const { value, name } = target;
+    this.setState({ [name]: value }, () => this.enableButton());
   };
 
-  handlePassChange = ({ target: { value } }) => {
-    this.setState({ passInput: value });
+  enableButton = () => {
+    const { email, pass } = this.state;
+    const regex = /^\w+([.-]?\w+)+@\w+([.:]?\w+)+(\.[a-zA-Z0-9]{3})+$/;
+    const passLength = 6;
+    if (pass.length >= passLength && regex.test(email)) {
+      this.setState({ isDisabled: false });
+    } else {
+      this.setState({ isDisabled: true });
+    }
+  };
+
+  onSubmit = (event) => {
+    event.preventDefault();
+    const { history, saveEmail } = this.props;
+    const { email } = this.state;
+    history.push('/carteira');
+    saveEmail(email);
   };
 
   render() {
     const {
-      handlePassChange,
-      handleEmailChange,
-      state: { emailInput, passInput },
+      handleChange,
+      onSubmit,
+      state: { email, pass, isDisabled },
     } = this;
-    const regex = /^\w+([.-]?\w+)+@\w+([.:]?\w+)+(\.[a-zA-Z0-9]{3})+$/;
-    const passLength = 5;
     return (
       <form>
         <input
           type="email"
           data-testid="email-input"
           placeholder="Email"
-          onChange={ handleEmailChange }
-          value={ emailInput }
+          name="email"
+          onChange={ handleChange }
+          defaultValue={ email }
         />
         <input
           type="password"
           data-testid="password-input"
           placeholder="Password"
-          onChange={ handlePassChange }
-          value={ passInput }
+          name="pass"
+          onChange={ handleChange }
+          defaultValue={ pass }
         />
-        {regex.test(emailInput) && passInput.length > passLength ? (
-          <button type="button">Entrar</button>
-        ) : (
-          <button type="button" disabled>
-            Entrar
-          </button>
-        )}
+        <input
+          type="submit"
+          value="Entrar"
+          onClick={ onSubmit }
+          disabled={ isDisabled }
+        />
       </form>
     );
   }
 }
 
-export default Login;
+Login.propTypes = {
+  history: PropTypes.objectOf(PropTypes.shape).isRequired,
+  saveEmail: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  saveEmail: (email) => dispatch(saveUser(email)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
