@@ -15,7 +15,8 @@ class Table extends React.Component {
   currencyValue = (tax) => Number(tax).toFixed(2).toString();
 
   render() {
-    const { expenses } = this.props;
+    const { props: { expenses } } = this;
+    console.log(this.props);
     const { valueConverted, currencyName, currencyValue } = this;
     return (
       <div>

@@ -1,21 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { saveExpenses } from '../../actions/index';
+import saveExpenses from '../../actions/index';
 
 const API_ENDPOINT = 'https://economia.awesomeapi.com.br/json/all';
 
 class Expenses extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       id: 0,
-      value: '0',
+      value: 0,
       currency: 'USD',
-      method: 'Dinheiro',
-      tag: 'Alimentação',
+      method: '',
+      tag: '',
       description: '',
-      exchangeRates: [],
+      exchangeRates: {},
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.saveResultToState = this.saveResultToState.bind(this);
@@ -26,23 +26,23 @@ class Expenses extends React.Component {
   }
 
   onSubmit() {
+    // event.preventDefault();
     const { saveExpense } = this.props;
-    // console.log(this.state);
-    saveExpense(this.state);
+    // console.log(allExpenses);
     this.setState((state) => ({ value: 0, id: state.id + 1 }));
+    saveExpense(this.state);
   }
 
   onChange = ({ target }) => {
     const { name, value } = target;
-    this.setState({
-      [name]: value,
-    });
+    this.setState({ [name]: value });
   };
 
   async saveResultToState() {
     const results = await fetch(API_ENDPOINT)
       .then((response) => response.json())
       .catch((error) => error);
+    this.setState({ exchangeRates: results });
     fetch(API_ENDPOINT)
       .then((response) => response.json())
       .catch((error) => error);
@@ -50,7 +50,7 @@ class Expenses extends React.Component {
   }
 
   render() {
-    const { method, tag, currency, value, description } = this.state;
+    const { method, tag, currency, value, description, exchangeRates } = this.state;
     const { onSubmit, onChange } = this;
     return (
       <form>
@@ -80,48 +80,16 @@ class Expenses extends React.Component {
               name="currency"
               value={ currency }
             >
-              <option data-testid="USD" value="USD">
-                USD
-              </option>
-              <option data-testid="CAD" value="CAD">
-                CAD
-              </option>
-              <option data-testid="EUR" value="EUR">
-                EUR
-              </option>
-              <option data-testid="GBP" value="GBP">
-                GBP
-              </option>
-              <option data-testid="ARS" value="ARS">
-                ARS
-              </option>
-              <option data-testid="BTC" value="BTC">
-                BTC
-              </option>
-              <option data-testid="LTC" value="LTC">
-                LTC
-              </option>
-              <option data-testid="JPY" value="JPY">
-                JPY
-              </option>
-              <option data-testid="CHF" value="CHF">
-                CHF
-              </option>
-              <option data-testid="AUD" value="AUD">
-                AUD
-              </option>
-              <option data-testid="CNY" value="CNY">
-                CNY
-              </option>
-              <option data-testid="ILS" value="ILS">
-                ILS
-              </option>
-              <option data-testid="ETH" value="ETH">
-                ETH
-              </option>
-              <option data-testid="XRP" value="XRP">
-                XRP
-              </option>
+              {Object.keys(exchangeRates).map((moeda) => (
+                moeda !== 'USDT' && (
+                  <option
+                    data-testid={ moeda }
+                    key={ moeda }
+                    value={ moeda }
+                  >
+                    { moeda }
+                  </option>
+                )))}
             </select>
           </label>
         </div>
@@ -165,8 +133,12 @@ Expenses.propTypes = {
   saveExpense: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  saveExpense: (val) => dispatch(saveExpenses(val)),
+const mapStateToProps = (state) => ({
+  expenses: state.wallet.expenses,
 });
 
-export default connect(null, mapDispatchToProps)(Expenses);
+const mapDispatchToProps = (dispatch) => ({
+  saveExpense: (state) => dispatch(saveExpenses(state)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Expenses);
