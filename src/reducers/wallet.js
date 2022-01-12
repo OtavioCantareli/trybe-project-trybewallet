@@ -9,9 +9,10 @@ const INITIAL_WALLET_STATE = {
 const wallet = (state = INITIAL_WALLET_STATE, action) => {
   switch (action.type) {
   case SUBMIT:
+    console.log(action.expenses);
     return {
       // currencies: [...state.currencies],
-      expenses: [...state.expenses, action.expenseInformation],
+      expenses: [...state.expenses, action.expenses],
     };
   default:
     return state;

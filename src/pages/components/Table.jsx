@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 
 class Table extends React.Component {
   valueConverted = (tax, value) => {
@@ -15,8 +15,10 @@ class Table extends React.Component {
   currencyValue = (tax) => Number(tax).toFixed(2).toString();
 
   render() {
-    const { props: { expenses } } = this;
-    console.log(this.props);
+    const {
+      props: { expenses },
+    } = this;
+    console.log(expenses);
     const { valueConverted, currencyName, currencyValue } = this;
     return (
       <div>
@@ -64,6 +66,18 @@ class Table extends React.Component {
     );
   }
 }
+
+// Table.defaultProps = {
+//   expenses: {
+//     id: 0,
+//     value: 0,
+//     currency: 'USD',
+//     method: '',
+//     tag: '',
+//     description: '',
+//     exchangeRates: {},
+//   },
+// };
 
 Table.propTypes = {
   expenses: PropTypes.arrayOf(PropTypes.object).isRequired,

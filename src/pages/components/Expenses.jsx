@@ -28,9 +28,9 @@ class Expenses extends React.Component {
   onSubmit() {
     // event.preventDefault();
     const { saveExpense } = this.props;
-    // console.log(allExpenses);
+    const { id, value, currency, method, tag, description } = this.state;
+    saveExpense({ id, value, currency, method, tag, description });
     this.setState((state) => ({ value: 0, id: state.id + 1 }));
-    saveExpense(this.state);
   }
 
   onChange = ({ target }) => {
@@ -133,12 +133,8 @@ Expenses.propTypes = {
   saveExpense: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  expenses: state.wallet.expenses,
-});
-
 const mapDispatchToProps = (dispatch) => ({
-  saveExpense: (state) => dispatch(saveExpenses(state)),
+  saveExpense: (expenses) => dispatch(saveExpenses(expenses)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Expenses);
+export default connect(null, mapDispatchToProps)(Expenses);
