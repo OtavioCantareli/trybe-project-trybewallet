@@ -26,10 +26,8 @@ class Expenses extends React.Component {
   }
 
   onSubmit() {
-    // event.preventDefault();
     const { saveExpense } = this.props;
-    const { id, value, currency, method, tag, description } = this.state;
-    saveExpense({ id, value, currency, method, tag, description });
+    saveExpense(this.state);
     this.setState((state) => ({ value: 0, id: state.id + 1 }));
   }
 
@@ -46,7 +44,6 @@ class Expenses extends React.Component {
     fetch(API_ENDPOINT)
       .then((response) => response.json())
       .catch((error) => error);
-    return results;
   }
 
   render() {
