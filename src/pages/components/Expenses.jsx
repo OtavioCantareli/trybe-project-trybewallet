@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import saveExpenses from '../../actions/index';
+import saveExpenses from '../../actions/wallet';
 
 const API_ENDPOINT = 'https://economia.awesomeapi.com.br/json/all';
 

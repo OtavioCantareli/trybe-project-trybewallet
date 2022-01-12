@@ -2,7 +2,7 @@
 import { SUBMIT } from '../actions/index';
 
 const INITIAL_WALLET_STATE = {
-  currencies: [],
+  // currencies: [],
   expenses: [],
 };
 
@@ -10,7 +10,7 @@ const wallet = (state = INITIAL_WALLET_STATE, action) => {
   switch (action.type) {
   case SUBMIT:
     return {
-      currencies: [...state.currencies],
+      // currencies: [...state.currencies],
       expenses: [...state.expenses, action.expenseInformation],
     };
   default:
