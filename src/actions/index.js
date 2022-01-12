@@ -7,4 +7,9 @@ const saveUser = (email) => ({
   email,
 });
 
+export const saveExpenses = (expenses) => ({
+  type: SUBMIT,
+  expenses,
+});
+
 export default saveUser;
