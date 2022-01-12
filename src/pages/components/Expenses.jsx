@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { saveExpenses } from '../../actions/index';
 
 const API_ENDPOINT = 'https://economia.awesomeapi.com.br/json/all';
@@ -8,7 +9,13 @@ class Expenses extends React.Component {
   constructor() {
     super();
     this.state = {
-      results: [],
+      id: 0,
+      value: '0',
+      currency: 'USD',
+      method: 'Dinheiro',
+      tag: 'Alimentação',
+      description: '',
+      exchangeRates: [],
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.saveResultToState = this.saveResultToState.bind(this);
@@ -18,35 +25,32 @@ class Expenses extends React.Component {
     this.saveResultToState();
   }
 
-  onSubmit(event) {
-    event.preventDefault();
-    console.log(this.state);
+  onSubmit() {
+    const { saveExpense } = this.props;
+    // console.log(this.state);
+    saveExpense(this.state);
+    this.setState((state) => ({ value: 0, id: state.id + 1 }));
   }
 
   onChange = ({ target }) => {
     const { name, value } = target;
-    this.setState({ [name]: value });
+    this.setState({
+      [name]: value,
+    });
   };
 
   async saveResultToState() {
     const results = await fetch(API_ENDPOINT)
       .then((response) => response.json())
       .catch((error) => error);
-    this.setState({ results });
-    // return fetch(API_ENDPOINT)
-    //   .then((response) => response.json())
-    //   .catch((error) => error);
+    fetch(API_ENDPOINT)
+      .then((response) => response.json())
+      .catch((error) => error);
     return results;
   }
 
   render() {
-    // const { results } = this.saveResultToState();
-    // const saveResultToState = async () => {
-    //   const results = fetch(API_ENDPOINT)
-    //     .then((response) => response.json())
-    //     .catch((error) => error);
-    //   return results;
-    // };
+    const { method, tag, currency, value, description } = this.state;
     const { onSubmit, onChange } = this;
     return (
       <form>
@@ -56,6 +60,7 @@ class Expenses extends React.Component {
           data-testid="value-input"
           placeholder="Value"
           onChange={ onChange }
+          value={ value }
         />
         <input
           type="text"
@@ -63,6 +68,7 @@ class Expenses extends React.Component {
           placeholder="Description"
           onChange={ onChange }
           name="description"
+          value={ description }
         />
         <div>
           <label htmlFor="currency-input">
@@ -72,14 +78,50 @@ class Expenses extends React.Component {
               id="currency-input"
               onChange={ onChange }
               name="currency"
+              value={ currency }
             >
-              {Object.keys(results)
-                .filter((items) => items !== 'USDT')
-                .map((result) => (
-                  <option data-testid={ `${result}` } key={ results[result].code }>
-                    {result}
-                  </option>
-                ))}
+              <option data-testid="USD" value="USD">
+                USD
+              </option>
+              <option data-testid="CAD" value="CAD">
+                CAD
+              </option>
+              <option data-testid="EUR" value="EUR">
+                EUR
+              </option>
+              <option data-testid="GBP" value="GBP">
+                GBP
+              </option>
+              <option data-testid="ARS" value="ARS">
+                ARS
+              </option>
+              <option data-testid="BTC" value="BTC">
+                BTC
+              </option>
+              <option data-testid="LTC" value="LTC">
+                LTC
+              </option>
+              <option data-testid="JPY" value="JPY">
+                JPY
+              </option>
+              <option data-testid="CHF" value="CHF">
+                CHF
+              </option>
+              <option data-testid="AUD" value="AUD">
+                AUD
+              </option>
+              <option data-testid="CNY" value="CNY">
+                CNY
+              </option>
+              <option data-testid="ILS" value="ILS">
+                ILS
+              </option>
+              <option data-testid="ETH" value="ETH">
+                ETH
+              </option>
+              <option data-testid="XRP" value="XRP">
+                XRP
+              </option>
             </select>
           </label>
         </div>
@@ -88,7 +130,8 @@ class Expenses extends React.Component {
             data-testid="method-input"
             onChange={ onChange }
             defaultValue="Dinheiro"
-            name="payment"
+            name="method"
+            value={ method }
           >
             <option>Dinheiro</option>
             <option>Cartão de crédito</option>
@@ -101,6 +144,7 @@ class Expenses extends React.Component {
             onChange={ onChange }
             defaultValue="Alimentação"
             name="tag"
+            value={ tag }
           >
             <option>Alimentação</option>
             <option>Lazer</option>
@@ -109,7 +153,7 @@ class Expenses extends React.Component {
             <option>Saúde</option>
           </select>
         </div>
-        <button name="btn" type="button" onClick={ onSubmit }>
+        <button name="btn" type="button" onClick={ () => onSubmit() }>
           Adicionar despesa
         </button>
       </form>
@@ -117,8 +161,12 @@ class Expenses extends React.Component {
   }
 }
 
+Expenses.propTypes = {
+  saveExpense: PropTypes.func.isRequired,
+};
+
 const mapDispatchToProps = (dispatch) => ({
-  expenses: (state) => dispatch(saveExpenses(state)),
+  saveExpense: (val) => dispatch(saveExpenses(val)),
 });
 
 export default connect(null, mapDispatchToProps)(Expenses);
