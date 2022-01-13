@@ -1,116 +1,59 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import saveExpenses from '../../actions/wallet';
 
 const API_ENDPOINT = 'https://economia.awesomeapi.com.br/json/all';
 
-class Expenses extends React.Component {
-  constructor(props) {
-    super(props);
+export default class Expenses extends React.Component {
+  constructor() {
+    super();
     this.state = {
-      id: 0,
-      value: 0,
-      currency: 'USD',
-      method: '',
-      tag: '',
-      description: '',
-      exchangeRates: {},
+      results: [],
     };
-    this.onSubmit = this.onSubmit.bind(this);
-    this.saveResultToState = this.saveResultToState.bind(this);
   }
 
   componentDidMount() {
     this.saveResultToState();
   }
 
-  onSubmit() {
-    const { saveExpense } = this.props;
-    saveExpense(this.state);
-    this.setState((state) => ({ value: 0, id: state.id + 1 }));
-  }
-
-  onChange = ({ target }) => {
-    const { name, value } = target;
-    this.setState({ [name]: value });
-  };
-
   async saveResultToState() {
     const results = await fetch(API_ENDPOINT)
       .then((response) => response.json())
       .catch((error) => error);
-    this.setState({ exchangeRates: results });
-    fetch(API_ENDPOINT)
-      .then((response) => response.json())
-      .catch((error) => error);
+    this.setState({ results });
   }
 
   render() {
-    const { method, tag, currency, value, description, exchangeRates } = this.state;
-    const { onSubmit, onChange } = this;
+    const { results } = this.state;
     return (
       <form>
-        <input
-          name="value"
-          type="number"
-          data-testid="value-input"
-          placeholder="Value"
-          onChange={ onChange }
-          value={ value }
-        />
+        <input type="number" data-testid="value-input" placeholder="Value" />
         <input
           type="text"
           data-testid="description-input"
           placeholder="Description"
-          onChange={ onChange }
-          name="description"
-          value={ description }
         />
         <div>
           <label htmlFor="currency-input">
             Moeda:
-            <select
-              data-testid="currency-input"
-              id="currency-input"
-              onChange={ onChange }
-              name="currency"
-              value={ currency }
-            >
-              {Object.keys(exchangeRates).map((moeda) => (
-                moeda !== 'USDT' && (
-                  <option
-                    data-testid={ moeda }
-                    key={ moeda }
-                    value={ moeda }
-                  >
-                    { moeda }
+            <select data-testid="currency-input" id="currency-input">
+              {Object.keys(results)
+                .filter((items) => items !== 'USDT')
+                .map((result) => (
+                  <option data-testid={ `${result}` } key={ results[result].code }>
+                    {result}
                   </option>
-                )))}
+                ))}
             </select>
           </label>
         </div>
         <div>
-          <select
-            data-testid="method-input"
-            onChange={ onChange }
-            defaultValue="Dinheiro"
-            name="method"
-            value={ method }
-          >
+          <select data-testid="method-input">
             <option>Dinheiro</option>
             <option>Cartão de crédito</option>
             <option>Cartão de débito</option>
           </select>
         </div>
         <div>
-          <select
-            data-testid="tag-input"
-            onChange={ onChange }
-            defaultValue="Alimentação"
-            name="tag"
-            value={ tag }
-          >
+          <select data-testid="tag-input">
             <option>Alimentação</option>
             <option>Lazer</option>
             <option>Trabalho</option>
@@ -118,20 +61,8 @@ class Expenses extends React.Component {
             <option>Saúde</option>
           </select>
         </div>
-        <button name="btn" type="button" onClick={ () => onSubmit() }>
-          Adicionar despesa
-        </button>
+        <button type="button">Adicionar despesa</button>
       </form>
     );
   }
 }
-
-Expenses.propTypes = {
-  saveExpense: PropTypes.func.isRequired,
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  saveExpense: (expenses) => dispatch(saveExpenses(expenses)),
-});
-
-export default connect(null, mapDispatchToProps)(Expenses);
