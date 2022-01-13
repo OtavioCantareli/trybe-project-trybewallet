@@ -2,7 +2,7 @@
 import { SUBMIT } from '../actions/index';
 
 const INITIAL_WALLET_STATE = {
-  // currencies: [],
+  currencies: [],
   expenses: [],
 };
 

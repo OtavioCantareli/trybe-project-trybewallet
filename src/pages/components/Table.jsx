@@ -3,18 +3,6 @@ import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 
 class Table extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // expenses: {
-      //   description: 'xablau',
-      //   tag: 'alimentação',
-      //   method: 'lol',
-      //   value: 0,
-      // },
-    };
-  }
-
   valueConverted = (tax, value) => {
     const taxRate = Number(tax);
     const valueRate = Number(value);
