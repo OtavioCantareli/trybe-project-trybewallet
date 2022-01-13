@@ -6,12 +6,12 @@ class Table extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      expenses: {
-        description: 'xablau',
-        tag: 'alimentação',
-        method: 'lol',
-        value: 0,
-      },
+      // expenses: {
+      //   description: 'xablau',
+      //   tag: 'alimentação',
+      //   method: 'lol',
+      //   value: 0,
+      // },
     };
   }
 
@@ -27,7 +27,7 @@ class Table extends React.Component {
   currencyValue = (tax) => Number(tax).toFixed(2).toString();
 
   render() {
-    const { expenses } = this.state;
+    const { expenses } = this.props;
     const { valueConverted, currencyName, currencyValue } = this;
     return (
       <div>
@@ -86,7 +86,7 @@ Table.defaultProps = {
 };
 
 Table.propTypes = {
-  expenses: PropTypes.arrayOf(PropTypes.object),
+  expenses: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
 const mapStateToProps = (state) => ({
