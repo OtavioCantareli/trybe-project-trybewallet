@@ -1,6 +1,6 @@
 import React from 'react';
 
-const API_ENDPOINT = 'https://economia.awesomeapi.com.br/json/all';
+const URL = 'https://economia.awesomeapi.com.br/json/all';
 
 export default class Expenses extends React.Component {
   constructor() {
@@ -15,7 +15,7 @@ export default class Expenses extends React.Component {
   }
 
   async saveResultToState() {
-    const results = await fetch(API_ENDPOINT)
+    const results = await fetch(URL)
       .then((response) => response.json())
       .catch((error) => error);
     this.setState({ results });
