@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import saveUser from '../actions/index';
+import { login } from '../actions/index';
 
 class Login extends React.Component {
   constructor() {
@@ -33,8 +33,8 @@ class Login extends React.Component {
     event.preventDefault();
     const { history, saveEmail } = this.props;
     const { email } = this.state;
-    history.push('/carteira');
     saveEmail(email);
+    history.push('/carteira');
   };
 
   render() {
@@ -78,7 +78,7 @@ Login.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  saveEmail: (email) => dispatch(saveUser(email)),
+  saveEmail: (email) => dispatch(login(email)),
 });
 
 export default connect(null, mapDispatchToProps)(Login);
