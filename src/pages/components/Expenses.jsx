@@ -14,8 +14,8 @@ class Expenses extends React.Component {
       tag: 'Alimentação',
       description: '',
     };
-    this.expenseSubmit = this.expenseSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.submit = this.submit.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
@@ -23,17 +23,17 @@ class Expenses extends React.Component {
     getCurrencies();
   }
 
-  handleChange = (e) => {
-    const { id, value } = e.target;
+  onChange = ({ target }) => {
+    const { id, value } = target;
     this.setState({ [id]: value });
   };
 
-  async expenseSubmit(event) {
+  async submit(event) {
     event.preventDefault();
     const { id, value, currency, method, tag, description } = this.state;
     const { dataExpense } = this.props;
     const exchangeRates = await api();
-    const expenseCard = {
+    const expenseDetails = {
       id,
       value,
       currency,
@@ -43,7 +43,7 @@ class Expenses extends React.Component {
       exchangeRates,
     };
     this.setState((prev) => ({ id: prev.id + 1 }));
-    dataExpense(expenseCard);
+    dataExpense(expenseDetails);
     this.setState({
       value: '',
       description: '',
@@ -52,7 +52,8 @@ class Expenses extends React.Component {
 
   render() {
     const { value, currency, method, tag, description } = this.state;
-    const { currenciesArr } = this.props;
+    const { currencies } = this.props;
+    const { onChange, submit } = this;
     return (
       <form>
         <input
@@ -61,7 +62,7 @@ class Expenses extends React.Component {
           type="number"
           value={ value }
           data-testid="value-input"
-          onChange={ this.handleChange }
+          onChange={ onChange }
         />
         <input
           id="description"
@@ -69,7 +70,7 @@ class Expenses extends React.Component {
           type="text"
           data-testid="description-input"
           value={ description }
-          onChange={ this.handleChange }
+          onChange={ onChange }
         />
         <div>
           <label htmlFor="currency">
@@ -79,11 +80,11 @@ class Expenses extends React.Component {
               name="currency"
               data-testid="currency-input"
               value={ currency }
-              onChange={ this.handleChange }
+              onChange={ onChange }
             >
-              {currenciesArr.map((c, i) => (
-                <option value={ c } key={ i } data-testid={ c }>
-                  {c}
+              {currencies.map((curr, index) => (
+                <option value={ curr } key={ index } data-testid={ curr }>
+                  {curr}
                 </option>
               ))}
             </select>
@@ -95,7 +96,7 @@ class Expenses extends React.Component {
             name="method"
             data-testid="method-input"
             value={ method }
-            onChange={ this.handleChange }
+            onChange={ onChange }
           >
             <option>Dinheiro</option>
             <option>Cartão de crédito</option>
@@ -108,7 +109,7 @@ class Expenses extends React.Component {
             id="tag"
             name="tag"
             value={ tag }
-            onChange={ this.handleChange }
+            onChange={ onChange }
           >
             <option>Alimentação</option>
             <option>Lazer</option>
@@ -119,7 +120,7 @@ class Expenses extends React.Component {
         </div>
         <button
           type="button"
-          onClick={ this.expenseSubmit }
+          onClick={ submit }
         >
           Adicionar despesa
         </button>
@@ -130,12 +131,12 @@ class Expenses extends React.Component {
 
 Expenses.propTypes = {
   getCurrencies: PropTypes.func.isRequired,
-  currenciesArr: PropTypes.arrayOf(PropTypes.any).isRequired,
+  currencies: PropTypes.arrayOf(PropTypes.any).isRequired,
   dataExpense: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  currenciesArr: state.wallet.currencies,
+  currencies: state.wallet.currencies,
 });
 
 const mapDispatchToProps = (dispatch) => ({
