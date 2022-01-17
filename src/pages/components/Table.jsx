@@ -64,17 +64,8 @@ class Table extends React.Component {
   }
 }
 
-Table.defaultProps = {
-  expenses: {
-    description: 'xablau',
-    tag: 'alimentação',
-    method: 'lol',
-    value: 0,
-  },
-};
-
 Table.propTypes = {
-  expenses: PropTypes.arrayOf(PropTypes.shape({})),
+  expenses: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 const mapStateToProps = (state) => ({
