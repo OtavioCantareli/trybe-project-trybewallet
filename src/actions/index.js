@@ -1,4 +1,7 @@
 // Coloque aqui suas actions
+
+// Peguei essa no repo do Max
+
 export const api = async () => {
   const url = 'https://economia.awesomeapi.com.br/json/all';
   const data = await fetch(url);
